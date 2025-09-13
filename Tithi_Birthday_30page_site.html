@@ -1,0 +1,225 @@
+<!--
+  ফাইল: Tithi_Birthday_30page_site.html
+  নির্দেশনা: আপনার GF (তিথি) এর ছবি same folder-এ "tithi.jpg" নামে রাখুন।
+  এই একটিই HTML ফাইল ৩০টি পেজ/স্লাইড সিমুলেট করে (JS দিয়ে)。
+  ব্রাউজারে খুলে উপরের Next / Prev বা কীবোর্ড তীর (← →) দিয়ে নেভিগেট করুন।
+-->
+
+<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>শুভ জন্মদিন তিথি — তোমার জন্য</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#ff3366;--soft:#f7f7fb}
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#0b1220 0%, #071025 60%);font-family: 'Noto Sans Bengali', Arial, sans-serif;color:var(--soft);overflow:hidden}
+    .app{height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+    .stage{width:100%;max-width:980px;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.12));border-radius:18px;box-shadow:0 10px 40px rgba(2,6,23,0.7);overflow:hidden;position:relative}
+    header{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid rgba(255,255,255,0.03)}
+    header h1{margin:0;font-size:18px;letter-spacing:0.6px}
+    header .meta{font-size:13px;opacity:0.85}
+
+    .content{padding:28px;min-height:520px;display:flex;gap:20px}
+    .left{flex:0 0 360px;display:flex;flex-direction:column;align-items:center;gap:14px}
+    .photo{width:320px;height:420px;border-radius:14px;overflow:hidden;border:6px solid rgba(255,255,255,0.04);position:relative}
+    .photo img{width:100%;height:100%;object-fit:cover;display:block;filter:brightness(1.02) saturate(1.05)}
+    .ribbon{position:absolute;left:12px;top:12px;background:linear-gradient(90deg,var(--accent),#ff73a7);padding:6px 10px;border-radius:8px;font-weight:700}
+    .sparkles{position:absolute;inset:0;pointer-events:none}
+
+    .right{flex:1;display:flex;flex-direction:column}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));padding:18px;border-radius:12px;box-shadow:0 6px 20px rgba(2,6,23,0.6)}
+    .message{min-height:320px;display:flex;align-items:center;justify-content:center;padding:12px;font-size:20px;line-height:1.6;text-align:center}
+    .controls{display:flex;align-items:center;justify-content:space-between;margin-top:12px}
+    .navs{display:flex;gap:12px}
+    button.icon{background:transparent;border:1px solid rgba(255,255,255,0.08);color:var(--soft);padding:10px 16px;border-radius:10px;cursor:pointer;font-weight:700}
+    button.icon:active{transform:translateY(2px)}
+    .page-ind{font-size:13px;opacity:0.9}
+
+    .hearts{position:absolute;right:18px;bottom:18px;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+    .heart{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,var(--accent),#ff7aa0);box-shadow:0 8px 18px rgba(255,50,120,0.16);transform:translateY(0);animation:pop 3s infinite}
+    @keyframes pop{0%{transform:translateY(0) scale(1)}50%{transform:translateY(-12px) scale(1.08)}100%{transform:translateY(0) scale(1)}}
+
+    /* Typing effect */
+    .typed{font-weight:700;font-size:22px}
+    .small{font-size:15px;opacity:0.95}
+
+    /* confetti canvas */
+    canvas.conf{position:absolute;left:0;top:0;pointer-events:none}
+
+    /* responsive */
+    @media (max-width:880px){.content{flex-direction:column}.left{order:2}.photo{width:90%;height:380px}} 
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="stage" role="main">
+      <header>
+        <h1>শুভ জন্মদিন তিথি 🎂</h1>
+        <div class="meta">তিথি, ১২ অক্টোবর — তোমার জন্য একটা ছোট গল্প ও উপহার</div>
+      </header>
+
+      <div class="content">
+        <div class="left">
+          <div class="photo card">
+            <!-- ছবি-আপলোড: tithi.jpg নাম দিয়ে same folder-এ রাখুন -->
+            <img id="photo" src="tithi.jpg" alt="Tithi">
+            <div class="ribbon">Happy 12 Oct</div>
+            <svg class="sparkles" width="100%" height="100%" viewBox="0 0 200 300" preserveAspectRatio="none">
+              <g opacity="0.12" fill="white">
+                <circle cx="30" cy="40" r="2.8"/>
+                <circle cx="60" cy="120" r="1.8"/>
+                <circle cx="190" cy="80" r="2.2"/>
+                <circle cx="150" cy="210" r="1.6"/>
+              </g>
+            </svg>
+          </div>
+
+          <div class="card small" style="text-align:center">
+            <div id="subtext">প্রতিটি পেজে তোমার জন্য একটি কথা ও একটুকু ভালবাসা।</div>
+            <div style="margin-top:8px"><strong>Next/Prev</strong> চাপলে তুমি আরও সুন্দর মুহূর্তগুলো দেখবে।</div>
+          </div>
+        </div>
+
+        <div class="right">
+          <div class="card message">
+            <div>
+              <div class="typed" id="typed"> </div>
+              <div style="height:10px"></div>
+              <div class="small" id="subline"></div>
+            </div>
+          </div>
+
+          <div class="controls">
+            <div class="navs">
+              <button class="icon" id="prev">◀ আগের</button>
+              <button class="icon" id="next">পরের ▶</button>
+            </div>
+            <div class="page-ind">পৃষ্ঠা <span id="pageno">1</span> / 30</div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="hearts">
+        <div class="heart">💖</div>
+        <div class="heart" style="animation-delay:0.7s">🌸</div>
+        <div class="heart" style="animation-delay:1.4s">🌹</div>
+      </div>
+
+      <canvas class="conf" id="confettiCanvas"></canvas>
+    </div>
+  </div>
+
+  <script>
+    const pages = [
+      "তিথি — আজকের দিনটা শুধুই তোমার। শুভ জন্মদিন! 🎉",
+      "তুমি আমার জীবনের সবচেয়ে মিষ্টি সপোর্ট এবং হাসির কারণ।",
+      "তুমি যখন পাশে থাকো, আমার প্রতিটি দিন উজ্জ্বল লাগে।",
+      "তোমার চোখে আমি আমার ভবিষ্যত দেখতে পাই।",
+      "তুমি হাসলে আমার মনও নাচে, তুমি রাগ করলে আমি সব ভুলে যাই।",
+      "তোমার কন্ঠের মিষ্টি কথা আমার সবচেয়ে প্রিয় গান।",
+      "একসাথে কাটানো প্রতিটি স্মৃতি আমার কাছে অমূল্য।",
+      "আমি প্রতিদিন তোমার জন্য আরও ভালো মানুষ হতে চাই।",
+      "তুমি হলো আমার নিরাপদ জায়গা, আমার ঘরবাড়ি—তুমি।",
+      "আজ তোমার জন্য ফুল, গান আর হাজারো ভালোবাসা।",
+      "তোমার হাতটা ধরলে সময় থেমে যায়—চাই তোমার হাত ছাড়বো না।",
+      "জন্মদিনে আমি তোমাকে বলতে চাই — তুমি বিশেষ, তুমি অসাধারণ।",
+      "তোমাকে দেখলে অজানা রঙে জীবন ভরিয়ে যায়।",
+      "তুমি যে হাসি দেও, ঐ হাসিই আমার প্রথম প্রার্থনা।",
+      "একটা প্রতিজ্ঞা: আমি তোমাকে সবসময় সৎভাবে ভালোবাসবো।",
+      "যত দূরেই যাই, মন চায় তোমার কাছে ফিরে আসতে।",
+      "তুমি যদি চান, আমি তোমার প্রতিটি স্বপ্নের সঙ্গী হব।",
+      "তুমি আমার নিয়মিত প্রেরণা, তোমার আছে আমার সব ভালবাসা।",
+      "যদি পৃথিবীতে আমার কাছে একটাই চাওয়া থাকে, সেটা হবে তোমার হাসি।",
+      "আজকের এই কেকটা তোমার জন্য — কাটা হলে সব চিন্তা কেটে যাবে।",
+      "এই ৩০টা পেজে আমি লিখেছি মুহূর্তগুলো, কিন্তু আমার ভালবাসা অসীম।",
+      "তুমি যখন কাঁদো, আমি সবে পাশে থাকবো; যখন হাসো, আকাশ হাসবে।",
+      "আমি তোমায় দেখে প্রতিদিনই নতুন প্রেমে পড়ি।",
+      "তুমি আমার জীবনের সবচেয়ে বড় ভাগ্য—তোমাকে পেয়ে কৃতজ্ঞ।",
+      "তুমি চাওলেই আমি দিনের আলো কিংবা রাতের চাঁদ হতে পারি তোমার জন্য।",
+      "জীবনটা যদি একটা গান, তুমি হবে তার সবচেয়ে সুন্দর সুর।",
+      "তুমি আমার কথা হলে মাধুর্য—আমি তোমার প্রতিটি নিশ্বাসে আছি।",
+      "শুধু আজ নয়—আগামীর প্রতিটি ১২ অক্টোবর তোমার পাশে থাকতে চাই।",
+      "তুমি আছো বলে আমার পৃথিবী পূর্ণ। শুভ জন্মদিন, তিথি — সব ভালবাসা তোমার।"
+    ];
+
+    let idx = 0;
+    const typedEl = document.getElementById('typed');
+    const subline = document.getElementById('subline');
+    const pageno = document.getElementById('pageno');
+    const canvas = document.getElementById('confettiCanvas');
+    const stage = document.querySelector('.stage');
+
+    function showPage(i){
+      idx = (i + pages.length) % pages.length;
+      pageno.textContent = (idx+1);
+      typeText(pages[idx]);
+      subline.textContent = 'তুমি আমার কাছে সবচেয়ে প্রিয় — ' + (idx+1) + '/30';
+      burst(idx);
+    }
+
+    let typingTimeout;
+    function typeText(text){
+      clearTimeout(typingTimeout);
+      typedEl.textContent = '';
+      let i=0;
+      function step(){
+        if(i<=text.length){
+          typedEl.textContent = text.slice(0,i);
+          i++;
+          typingTimeout = setTimeout(step, 28 + Math.random()*20);
+        }
+      }
+      step();
+    }
+
+    document.getElementById('next').addEventListener('click', ()=> showPage(idx+1));
+    document.getElementById('prev').addEventListener('click', ()=> showPage(idx-1));
+    window.addEventListener('keydown', (e)=>{ if(e.key==="ArrowRight") showPage(idx+1); if(e.key==="ArrowLeft") showPage(idx-1); });
+
+    function resizeCanvas(){ canvas.width = stage.clientWidth; canvas.height = stage.clientHeight; canvas.style.width = stage.clientWidth + 'px'; canvas.style.height = stage.clientHeight + 'px'; }
+    window.addEventListener('resize', resizeCanvas); resizeCanvas();
+    const ctx = canvas.getContext('2d');
+    let confs = [];
+    function spawnConfetti(x,y){
+      for(let i=0;i<24;i++){
+        confs.push({x:x,y:y, vx:(Math.random()-0.5)*8, vy:(-6+Math.random()*2), r:6+Math.random()*8, c:['#ff5c8a','#ffd166','#a0e7e5','#7afcff'][Math.floor(Math.random()*4)], life:80 + Math.random()*60 });
+      }
+    }
+    function burst(pageIdx){
+      spawnConfetti(canvas.width*0.5, canvas.height*0.35);
+    }
+    function confLoop(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      for(let i=confs.length-1;i>=0;i--){
+        let p = confs[i];
+        p.x += p.vx; p.y += p.vy; p.vy += 0.28; p.life -=1; p.r *= 0.995;
+        ctx.fillStyle = p.c; ctx.beginPath(); ctx.ellipse(p.x,p.y,p.r,p.r*0.8,0,0,Math.PI*2); ctx.fill();
+        if(p.life<0 || p.y>canvas.height+40) confs.splice(i,1);
+      }
+      requestAnimationFrame(confLoop);
+    }
+    confLoop();
+
+    showPage(0);
+
+    const photo = document.getElementById('photo');
+    let floatTimer;
+    function floatEffect(){
+      photo.style.transform = `translateY(${Math.sin(Date.now()/800)*6}px)`;
+      floatTimer = requestAnimationFrame(floatEffect);
+    }
+    floatEffect();
+
+    setInterval(()=>{ const h = document.querySelectorAll('.heart'); h[Math.floor(Math.random()*h.length)].style.transform='scale(1.12)'; setTimeout(()=>{ h.forEach(x=>x.style.transform='scale(1)') },420); }, 2200);
+
+    let touchStartX = null;
+    stage.addEventListener('touchstart', e=>{ touchStartX = e.changedTouches[0].clientX; });
+    stage.addEventListener('touchend', e=>{ if(touchStartX===null) return; const dx = e.changedTouches[0].clientX - touchStartX; if(dx < -40) showPage(idx+1); if(dx > 40) showPage(idx-1); touchStartX=null; });
+
+    photo.onerror = function(){ photo.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800"><rect width="100%" height="100%" fill="%23010a14"/><text x="50%" y="50%" fill="%23ffffff" font-size="26" text-anchor="middle" dy="0.3em">Tithi এর ছবি এখানে রাখুন (tithi.jpg)</text></svg>'; };
+  </script>
+</body>
+</html>
